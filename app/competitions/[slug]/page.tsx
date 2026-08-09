@@ -14,7 +14,7 @@ export default async function CompetitionPage({params}:{params:{slug:string}}){
  const accepting=competitionAcceptsEntries(competition.status,competition.opensAt,competition.closesAt)&&competition.entryFeePence===0;
  const galleryEnabled=competition.galleryVisible&&competitionIsPubliclyVisible(competition.status);
  const [gallery,count,ownedDogs,userEntries]=await Promise.all([
-  prisma.competitionEntry.findMany({where:{competitionId:competition.id,status:{in:["SUBMITTED","FINALIST","WINNER"]},imageUseConsentAt:{not:null}},select:{id:true,dog:{select:{name:true,registryNumber:true}}},orderBy:{submittedAt:"desc"},take:galleryEnabled?6:0}),
+  prisma.competitionEntry.findMany({where:{competitionId:competition.id,status:{in:["SUBMITTED","FINALIST","WINNER"]}},select:{id:true,dog:{select:{name:true,registryNumber:true}}},orderBy:{submittedAt:"desc"},take:galleryEnabled?6:0}),
   prisma.competitionEntry.count({where:{competitionId:competition.id,status:{in:["SUBMITTED","FINALIST","WINNER"]}}}),
   user?prisma.dogIdentity.findMany({where:{ownerships:{some:{userId:user.id}}},select:{id:true}}):[],
   user?prisma.competitionEntry.findMany({where:{competitionId:competition.id,submittedById:user.id},select:{dogId:true,status:true}}):[]
